@@ -20,11 +20,15 @@ module Heya
       }
       subject = subject.call(user) if subject.respond_to?(:call)
 
+      cc = step.params.fetch("cc", nil)
+      cc = cc.call(user) if cc.respond_to?(:call)
+
       instance_variable_set(:"@#{user.model_name.element}", user)
       instance_variable_set(:@campaign_name, campaign_name)
 
       mail(
         from: from,
+        cc: cc,
         bcc: bcc,
         reply_to: reply_to,
         to: to_address(user, step),
